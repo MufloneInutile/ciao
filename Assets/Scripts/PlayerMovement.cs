@@ -54,14 +54,16 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void HandleGroundCheck()
     {
-        if (groundCheck != null)
+        // Prima fonte affidabile: il CharacterController stesso.
+        isGrounded = controller.isGrounded;
+
+        // In più, se è impostato un groundCheck, usa anche la sfera come conferma.
+        // Se groundMask non è stato impostato (Nothing), consideriamo TUTTI i layer,
+        // così il salto funziona anche senza configurare il layer del terreno.
+        if (!isGrounded && groundCheck != null)
         {
-            isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        }
-        else
-        {
-            // Fallback: usa il CharacterController se non è impostato un groundCheck.
-            isGrounded = controller.isGrounded;
+            int mask = groundMask.value == 0 ? ~0 : groundMask.value;
+            isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, mask);
         }
 
         // Mantiene il personaggio incollato al suolo quando è a terra.

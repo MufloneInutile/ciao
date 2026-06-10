@@ -16,12 +16,26 @@ public class MouseLook : MonoBehaviour
 
     private void Start()
     {
+        // Se 'playerBody' non è stato assegnato nell'Inspector, prova a usare
+        // il genitore della camera (di solito è il personaggio). Così la
+        // rotazione destra/sinistra funziona anche senza configurazione manuale.
+        if (playerBody == null && transform.parent != null)
+        {
+            playerBody = transform.parent;
+        }
+
         // Blocca e nasconde il cursore al centro dello schermo.
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
     {
+        // Premi ESC per liberare il cursore (utile per uscire dal Play).
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
